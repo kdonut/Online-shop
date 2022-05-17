@@ -1,0 +1,33 @@
+h1 {
+    text-align: center;
+    color: var(--color-gray-300);
+}
+
+form {
+    max-width: 25rem;
+    margin:var(--space-8) auto;
+    padding : var(--space-4); 
+    background-color: var(--color-gray-600);
+    border-radius: var(--border-radius-medium);
+    text-align: center;
+}
+
+form hr {
+    border-color: var(--color-primary-200);
+    margin: var(--space-4);
+}
+
+label {
+    color: var(--color-gray-100);
+    display: block;
+    margin-bottom:var(--space-4) ;
+}
+
+input, textarea {
+    font:inherit;
+    padding: var(--space-2);
+    border-radius: var(--border-radius-small);
+    border: none;
+    width: 90%;
+    
+}
