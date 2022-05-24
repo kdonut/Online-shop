@@ -1,8 +1,25 @@
 const path = require('path');//ta paczka wbudowana w node.js
 
+
+
+const csrf = require('csurf');
 const express = require('express');
+const createSessionConfig = require('./config/session');
+
+
+
+const expressSession = require('express-session');
+
+const addCsrfTokenMW = require('./middlewares/csrf-token-mw');
+const errorHandlerMW = require('./middlewares/error-handler-mw');
+const checkAuthStatusMW = require('./middlewares/check-auth-mw');
+
+
 const db = require('./data/database');
+const baseRoutes = require('./routes/base.routes');
 const authRoutes = require('./routes/auth.routes');
+const productsRoutes = require('./routes/products.routes');
+
 
 
 const app = express();
@@ -14,7 +31,21 @@ app.use(express.static('public'));//folder z static content dostepny dla wszystk
 
 app.use(express.urlencoded({ extended:false}));//by moc przekazywac regularne parametry (name) z  formsow z post do funkcji w controlerze
 
+
+const sessionConfig = createSessionConfig();
+app.use(expressSession(sessionConfig));
+
+///najlepiej csurf przed Routs
+app.use(csrf());
+app.use(addCsrfTokenMW);
+app.use(checkAuthStatusMW);
+
+app.use(baseRoutes);
+app.use(productsRoutes);
 app.use(authRoutes);
+app.use(errorHandlerMW);
+///eror handling
+
 
 db.connectToDatabase().then(function(){
     app.listen(3000);
