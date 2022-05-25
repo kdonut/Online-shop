@@ -1,18 +1,49 @@
 const User = require("../models/user.model");
 const authUtil = require("../util/authentication");
-const { postalIsValid } = require("../util/validation");
+//const { postalIsValid } = require("../util/validation");
+
+const sessionFlash = require("../util/session-flash");
 
 const validation = require("../util/validation");
 
 function getSignup(req, res) {
-  //..
-  res.render("customer/auth/signup"); //widzi go bo sciezka do views byla dodana w app.js
+  let sessionData = sessionFlash.getSessionData(req);
+
+    //if no session set default data
+
+    if(!sessionData){
+        sessionData = {
+            email : '',
+            password:'',
+            confirmEmail :'',
+            password : '',
+            fullname : '',
+            street: '',
+            postal:'',
+            city: ''
+        };
+
+
+    }
+
+  res.render("customer/auth/signup",{inputData : sessionData}); //widzi go bo sciezka do views byla dodana w app.js
 }
 
 async function signup(req, res, next) {
   //data validation, create user
   const userData = req.body;
-  console.log(validation.postalIsValid(userData.postal));
+
+  const enteredData = {
+    email: userData.email,
+    confirmEmail: userData['confirm-email'],
+    password: userData.password,
+    fullname: userData.fullname,
+    street: userData.street,
+    postal: userData.postal,
+    city: userData.city,
+  };
+
+  //console.log(validation.postalIsValid(userData.postal));
 
   if (
     !validation.userDetailsAreValid(
@@ -22,10 +53,23 @@ async function signup(req, res, next) {
       userData.street,
       userData.postal,
       userData.city
-    ) || !validation.emailIsConfirmed(userData.email,userData['confirm-email']) || validation.postalIsValid(userData.postal)===null
+    ) ||
+    !validation.emailIsConfirmed(userData.email, userData["confirm-email"]) ||
+    validation.postalIsValid(userData.postal) === null
   ) {
     console.log("Wywala przy 1 tescie");
-    res.redirect("/signup");
+    sessionFlash.flashSessionData(
+      req,
+      {
+        errorMessage:
+          "Please check your imput, password must be at least 6 char. long, postal shoud be in format xx-xxx",
+        ...enteredData, //ten zapis dodaje obiekt enteredData do tworzonego juz z errormessage
+      },
+      function () {
+        res.redirect("/signup");
+      }
+    );
+
     return;
   }
 
@@ -41,11 +85,18 @@ async function signup(req, res, next) {
   const existsAlready = await user.existsAlready();
 
   try {
-
-    if(existsAlready){
-        res.redirect("/signup");
-        console.log("User already exists");
-        return;
+    if (existsAlready) {
+      sessionFlash.flashSessionData(
+        req,
+        {
+          errorMessage: "User already exists",
+          ...enteredData, //ten zapis dodaje obiekt enteredData do tworzonego juz z errormessage
+        },
+        function () {
+          res.redirect("/signup");
+        }
+      );
+      return;
     }
 
     await user.signup();
@@ -58,7 +109,18 @@ async function signup(req, res, next) {
 }
 
 function getLogin(req, res) {
-  res.render("customer/auth/login");
+    let sessionData = sessionFlash.getSessionData(req);
+
+    //if no session set default data
+
+    if(!sessionData){
+        sessionData = {
+            email : '',
+            password:'',
+        };
+    }
+
+  res.render("customer/auth/login",{inputData : sessionData});
 }
 
 async function login(req, res) {
@@ -73,8 +135,18 @@ async function login(req, res) {
     return;
   }
 
+  const sessionErrorData = {
+    errorMessage:
+      "Invalid credentials - please double check your email and password",
+    email: user.email,
+    password: user.password,
+  };
+
   if (!existingUser) {
-    res.redirect("/login");
+    sessionFlash.flashSessionData(req, sessionErrorData, function () {
+      res.redirect("/login");
+    });
+
     return;
   }
 
@@ -82,7 +154,9 @@ async function login(req, res) {
     existingUser.password
   );
   if (!passwordIsCorrect) {
-    res.redirect("/login");
+    sessionFlash.flashSessionData(req, sessionErrorData, function () {
+      res.redirect("/login");
+    });
     return;
   }
 
@@ -101,5 +175,5 @@ module.exports = {
   getLogin: getLogin,
   signup: signup,
   login: login,
-  logout: logout,
+  logout: logout
 };
