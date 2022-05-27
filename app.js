@@ -19,6 +19,7 @@ const db = require('./data/database');
 const baseRoutes = require('./routes/base.routes');
 const authRoutes = require('./routes/auth.routes');
 const productsRoutes = require('./routes/products.routes');
+const adminRoutes = require('./routes/admin.routes');
 
 
 
@@ -43,6 +44,8 @@ app.use(checkAuthStatusMW);
 app.use(baseRoutes);
 app.use(productsRoutes);
 app.use(authRoutes);
+
+app.use('/admin',adminRoutes);
 app.use(errorHandlerMW);
 ///eror handling
 

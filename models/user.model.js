@@ -21,6 +21,11 @@ class User {
 
     }
 
+    checkIfIsAdmin()
+    {
+        return db.getDb().collection('users').findOne({email : this.email,isAdmin:true});
+    }
+
     async existsAlready(){
         const existingUser = await this.getUserWithSameEmail();
         if(existingUser){

@@ -21,7 +21,8 @@ function userDetailsAreValid(email, password, name, street, postal, city) {
     !isEmpty(name) &&
     !isEmpty(street) &&
     !isEmpty(postal) &&
-    !isEmpty(street)
+    !isEmpty(street) &&
+    !isEmpty(city)
   );
 }
 
