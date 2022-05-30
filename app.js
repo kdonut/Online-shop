@@ -29,8 +29,9 @@ app.set('view engine','ejs');//define views
 app.set('views',path.join(__dirname,'views'));//definicja sciezki do widokow
 
 app.use(express.static('public'));//folder z static content dostepny dla wszystkiczh
-
+app.use('/products/assets',express.static('product-data'));
 app.use(express.urlencoded({ extended:false}));//by moc przekazywac regularne parametry (name) z  formsow z post do funkcji w controlerze
+
 
 
 const sessionConfig = createSessionConfig();
