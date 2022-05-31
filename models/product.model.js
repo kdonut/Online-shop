@@ -30,7 +30,6 @@ class Product {
       .collection("products")
       .findOne({ _id: prodId });
 
-
     if (!product) {
       const error = new Error("Coud not find product with provided Id");
       error.code = 404;
@@ -49,8 +48,7 @@ class Product {
     });
   }
 
-
-  updateImageData(){
+  updateImageData() {
     this.imagePath = `product-data/images/${this.image}`;
     this.imageUrl = `/products/assets/images/${this.image}`;
   }
@@ -66,30 +64,36 @@ class Product {
       imageUrl: this.imageUrl,
     };
 
-    if(this.id){
-        const productId = new mongodb.ObjectId(this.id);
+    if (this.id) {
+      const productId = new mongodb.ObjectId(this.id);
 
-    if(!this.image){
+      if (!this.image) {
         delete producData.image;
-    }
+      }
 
-        await db.getDb().collection('products').updateOne({_id:productId},{
-        $set: producData,
-       });
-
-
-    }
-    else {
-        await db.getDb().collection("products").insertOne(producData);
-
+      await db.getDb().collection("products").updateOne(
+        { _id: productId },
+        {
+          $set: producData,
+        }
+      );
+    } else {
+      await db.getDb().collection("products").insertOne(producData);
     }
   }
 
-  replaceImage(newImage){
+  replaceImage(newImage) {
     this.image = newImage;
     this.updateImageData();
-}
+  }
 
+  async remove(){
+    if (this.id) {
+      const productId = new mongodb.ObjectId(this.id);
+      await db.getDb().collection("products").deleteOne({_id:productId});
+    }
+
+  }
 }
 
 module.exports = Product;

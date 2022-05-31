@@ -16,7 +16,7 @@
                 </p>
             </section>
        <% } %> 
-        <form action="/login" method="POST">
+        <form class="authorization-forms" action="/login" method="POST">
             <input type="hidden" value="<%= locals.csrfToken %>" name="_csrf">
         <p>
             <label for="email">E-mail</label>
