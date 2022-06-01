@@ -11,6 +11,19 @@ async function getAllProducts(req,res){
    
 }
 
+async function getProductDetails(req,res,next)
+{
+  
+    try{
+        const product = await Product.findById(req.params.id);
+        console.log(product);
+        res.render('customer/products/product-detail',{product : product});
+    }catch(error){
+        next(error);
+    }
+}
+
 module.exports = {
-    getAllProducts : getAllProducts
+    getAllProducts : getAllProducts,
+    getProductDetails : getProductDetails
 }
