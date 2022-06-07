@@ -17,9 +17,10 @@ class Product {
 
   static async findById(productId) {
     let prodId;
-
+    
     try {
       prodId = new mongodb.ObjectId(productId);
+     
     } catch (error) {
       error.code = 404;
       throw error;
@@ -29,7 +30,7 @@ class Product {
       .getDb()
       .collection("products")
       .findOne({ _id: prodId });
-
+    
     if (!product) {
       const error = new Error("Coud not find product with provided Id");
       error.code = 404;

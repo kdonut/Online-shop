@@ -1,5 +1,5 @@
 function protectRoutes(req,res,next){
-    console.log('Jestem w protec routes');
+
     
     
     if(!res.locals.isAuth) {

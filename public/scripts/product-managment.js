@@ -3,7 +3,7 @@ const deleteProductButtonElements = document.querySelectorAll('.product-item but
 
 async function deleteProduct(event){
     const buttonElement = event.target;
-    console.log(buttonElement.dataset.csrf);
+   
     const productId = buttonElement.dataset.productid;
     const csrfToken = buttonElement.dataset.csrf;
 

@@ -57,7 +57,7 @@ async function signup(req, res, next) {
     !validation.emailIsConfirmed(userData.email, userData["confirm-email"]) ||
     validation.postalIsValid(userData.postal) === null
   ) {
-    console.log("Wywala przy 1 tescie");
+   
     sessionFlash.flashSessionData(
       req,
       {

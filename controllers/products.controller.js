@@ -16,10 +16,11 @@ async function getProductDetails(req,res,next)
   
     try{
         const product = await Product.findById(req.params.id);
-        console.log(product);
+       console.log(product);
         res.render('customer/products/product-detail',{product : product});
     }catch(error){
         next(error);
+        
     }
 }
 
