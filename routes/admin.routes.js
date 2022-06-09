@@ -1,21 +1,24 @@
 const express = require('express');
 
-const router = express.Router();
 const adminController = require('../controllers/admin.controller');
-const imageUploadMw = require('../middlewares/image-uploads-mw');
+const imageUploadMiddleware = require('../middlewares/image-uploads');
 
-router.get('/products',adminController.getProducts); //admin/products
-   
+const router = express.Router();
 
-router.get('/products/new',adminController.getNewProduct);
+router.get('/products', adminController.getProducts); // /admin/products
 
-router.post('/products',imageUploadMw,adminController.createNewProduct);
+router.get('/products/new', adminController.getNewProduct);
 
-//update product
-router.get('/products/:id',adminController.getUpdateProduct);
+router.post('/products', imageUploadMiddleware, adminController.createNewProduct);
 
-router.post('/products/:id',imageUploadMw,adminController.updateProduct);
+router.get('/products/:id', adminController.getUpdateProduct);
 
-router.delete('/products/:id',adminController.deleteProduct);
+router.post('/products/:id', imageUploadMiddleware, adminController.updateProduct);
+
+router.delete('/products/:id', adminController.deleteProduct);
+
+router.get('/orders', adminController.getOrders);
+
+router.patch('/orders/:id', adminController.updateOrder);
 
 module.exports = router;
